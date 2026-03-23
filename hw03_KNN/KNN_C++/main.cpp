@@ -1,6 +1,6 @@
 #include<iostream>
 
-#include "knn.hpp"
+#include"knn.hpp"
 #include"types.hpp"
 #include"data_utils.hpp"
 #include"scaler.hpp"

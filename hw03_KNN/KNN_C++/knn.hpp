@@ -13,7 +13,7 @@ using namespace datatypes;
 
 namespace KNN{
 
-    class Metric
+    class Metric //* Euclidian
     {
         public:
             virtual double operator()(const Series& first, const Series& second) const
@@ -42,11 +42,13 @@ namespace KNN{
             DataFrame X_train;
             Predictions Y_train;
     
+            bool fitted = false;
+
             std::vector<int> classes;
     
             int k;
     
-        Distances clalc_distances(const Series& row)
+        Distances calc_distances(const Series& row)
         {
             size_t rows = X_train.size();
     
@@ -77,13 +79,15 @@ namespace KNN{
                 this->Y_train = Y_train;
     
                 auto Y_copy = Y_train;
+
+                fitted = true;
     
                 //classes = {Y_copy.begin(), std::unique(Y_copy.begin(), Y_copy.end())};
             }
     
             Predictions predict(const DataFrame& X_test)
             {
-                if(X_test.empty())
+                if(!fit)
                     throw std::logic_error("Fit was not called");
     
                 size_t rows = X_test.size();
@@ -102,7 +106,7 @@ namespace KNN{
     
                 for(int i = 0; i<rows;++i)
                 {
-                    auto distances = clalc_distances(X_test[i]);
+                    auto distances = calc_distances(X_test[i]);
     
                     std::nth_element(distances.begin(), distances.begin() + k, distances.end(), 
                     [](const Distances::value_type& first, const Distances::value_type& second)
